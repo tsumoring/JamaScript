@@ -11,8 +11,8 @@ jobs:
       - checkout
 
       - add_ssh_keys:
-      fingerprints:
-        - "f9:28:a9:a7:87:d6:b2:7e:db:85:31:cb:64:00:ab:d3"
+        fingerprints:
+          - "f9:28:a9:a7:87:d6:b2:7e:db:85:31:cb:64:00:ab:d3"
 
       # - run:
       #     name: Start ssh-keyscan
