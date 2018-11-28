@@ -32,7 +32,3 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
-
-      # run tests!
-#      - run: cd laravel && php ../composer.phar install
-      - run: cd codeception && composer install && bin/codecept run functional data/class/SC_ViewCest:buildMessageFromTemplateIdTest --debug --steps --verbose
