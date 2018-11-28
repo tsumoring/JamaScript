@@ -1,34 +1,26 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
+# Environment variables
+# - HOST_NAME
+# - USER_NAME
+
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/php:5.6-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mysql:9.4
-
-    working_directory: ~/repo
-
+      - image: circleci/php:7.1-browsers
     steps:
       - checkout
+      
+      - add_ssh_keys: f9:28:a9:a7:87:d6:b2:7e:db:85:31:cb:64:00:ab:d3
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
 
-      - run: composer install -n --prefer-dist
+      - run:
+          name: Start ssh-keyscan
+          command: |
+            ssh-keyscan ${HOST_NAME} >> ~/.ssh/known_hosts
 
-      - save_cache:
-          paths:
-            - ./vendor
-          key: v1-dependencies-{{ checksum "composer.json" }}
+      - deploy:
+          name: Start master deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                rsync -av --delete --exclude='.git' --exclude='.circleci' ./ ${USER_NAME}@${HOST_NAME}:/home/{USER_NAME}/htdocs/public_html/
+            fi
